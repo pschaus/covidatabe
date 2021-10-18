@@ -22,7 +22,7 @@ jobs:
       run: |
         python download.py
         jupyter nbconvert --to html --TemplateExporter.exclude_input=True --no-prompt --execute hospi.ipynb --output docs/hospi.html
-          jupyter nbconvert --to html --TemplateExporter.exclude_input=True --no-prompt --execute cases.ipynb --output docs/cases.html
+        jupyter nbconvert --to html --TemplateExporter.exclude_input=True --no-prompt --execute cases.ipynb --output docs/cases.html
 
     - name: Commit the new processed data
       run: |    
