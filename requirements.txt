@@ -12,4 +12,5 @@ regex
 pytrends
 scipy>=1.5.2
 numpy>=1.19.2
+jupyterlab
 Authlib
