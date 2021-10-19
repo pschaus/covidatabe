@@ -1,1 +1,1 @@
-[www.covidata.be](www.covidata.be)
+[www.covidata.be](http://www.covidata.be)
