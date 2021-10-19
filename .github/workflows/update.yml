@@ -26,7 +26,8 @@ jobs:
         jupyter nbconvert --to html --TemplateExporter.exclude_input=True --no-prompt --execute covid-deaths.ipynb --output docs/covid-deaths.html
 
     - name: Commit the new processed data
-      run: |    
+      run: |
+        git pull
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add .
