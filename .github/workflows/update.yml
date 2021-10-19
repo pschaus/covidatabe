@@ -23,6 +23,7 @@ jobs:
         python download.py
         jupyter nbconvert --to html --TemplateExporter.exclude_input=True --no-prompt --execute hospi.ipynb --output docs/hospi.html
         jupyter nbconvert --to html --TemplateExporter.exclude_input=True --no-prompt --execute cases.ipynb --output docs/cases.html
+        jupyter nbconvert --to html --TemplateExporter.exclude_input=True --no-prompt --execute covid-deaths.ipynb --output docs/covid-deaths.html
 
     - name: Commit the new processed data
       run: |    
