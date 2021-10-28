@@ -79,7 +79,14 @@ def case_age_sex():
     df.DATE = pd.to_datetime(df.DATE)
     df.to_csv('static/csv/be-covid-case-age-sex.csv',index=True)
 
+def vaccines():
 
+    url="https://epistat.sciensano.be/Data/COVID19BE_VACC.csv"
+    s=requests.get(url).content
+    df_vaccines=pd.read_csv(io.StringIO(s.decode('latin-1')),index_col = 0) # last line is NaN
+    df_vaccines.to_csv('static/csv/be-covid-vaccines.csv',index=True)
+
+vaccines()
 cases_hospi()
 mortality()
 case_age_sex()
