@@ -1,6 +1,15 @@
 import pandas as pd
 import io
 import requests
+from datetime import date
+from datetime import datetime
+from datetime import timedelta
+import urllib.request, json
+
+from io import BytesIO
+from zipfile import ZipFile
+import pandas
+import requests
 
 
 prov_codes = {"VlaamsBrabant": "VBR",
@@ -71,6 +80,33 @@ def mortality():
     df.DATE = pd.to_datetime(df.DATE)
     df.to_csv('static/csv/be-covid-mortality.csv',index=True)
 
+
+def mortality_statbel():
+    url = "https://statbel.fgov.be/sites/default/files/files/opendata/deathday/DEMO_DEATH_OPEN.zip"
+    user_agent = {'User-agent': 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)'}
+    content = requests.get(url, headers=user_agent)
+    zf = ZipFile(BytesIO(content.content))
+
+    # find the first matching csv file in the zip:
+    match = [s for s in zf.namelist() if ".txt" in s][0]
+    # the first line of the file contains a string - that line shall de     ignored, hence skiprows
+
+    mydateparser = lambda x: datetime.strptime(x, "%d/%m/%Y")
+
+    df = pandas.read_csv(zf.open(match), parse_dates=['DT_DATE'], date_parser=mydateparser, low_memory=False, sep="|",
+                         encoding="latin-1")
+
+    df = df[df['DT_DATE'] >= '2015-01-01']
+
+    df = df[df['DT_DATE'] >= '2015-01-01']
+
+    df.dropna(thresh=1,inplace=True)
+
+    df.to_csv("static/csv/mortality_statbel.csv", index=False)
+
+
+
+
 def case_age_sex():
     url="https://epistat.sciensano.be/Data/COVID19BE_CASES_AGESEX.csv"
     s=requests.get(url).content
@@ -89,4 +125,5 @@ def vaccines():
 vaccines()
 cases_hospi()
 mortality()
+mortality_statbel()
 case_age_sex()
