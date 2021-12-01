@@ -81,6 +81,33 @@ def mortality():
     df.to_csv('static/csv/be-covid-mortality.csv',index=True)
 
 
+
+def covid_daily_ins5():
+    DOWNLOAD_URL = "https://epistat.sciensano.be/Data/COVID19BE_CASES_MUNI.csv"
+    DOWNLOAD_PATH = "static/csv/COVID19BE_CASES_MUNI.csv"
+    urllib.request.urlretrieve(DOWNLOAD_URL, DOWNLOAD_PATH)
+
+    df = pd.read_csv("static/csv/COVID19BE_CASES_MUNI.csv", parse_dates=['DATE'], encoding='utf8')
+    df = df[['DATE', 'NIS5', 'CASES', 'TX_DESCR_FR']]
+
+    df.dropna(inplace=True)
+    df['NIS5'] = df['NIS5'].astype(int).astype(str)
+
+    df = df.replace({'<5': '1'})
+    df['CASES'] = df['CASES'].astype(int)
+
+    df5 = df.groupby([df.NIS5, df.DATE, df.TX_DESCR_FR]).agg({'CASES': ['sum']}).reset_index()
+    df5.columns = df5.columns.get_level_values(0)
+    df5['NIS5'] = df5['NIS5'].astype(int)
+
+    df_pop = pd.read_csv("static/csv/ins_pop.csv", dtype={"NIS5": int})
+    df_pop['NIS5'] = df_pop['NIS5'].astype(int)
+    df5 = pd.merge(df5, df_pop, left_on='NIS5', right_on='NIS5', how='left')
+    df5.to_csv("static/csv/cases_daily_ins5.csv")
+
+
+
+
 def mortality_statbel():
     url = "https://statbel.fgov.be/sites/default/files/files/opendata/deathday/DEMO_DEATH_OPEN.zip"
     user_agent = {'User-agent': 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)'}
@@ -122,8 +149,36 @@ def vaccines():
     df_vaccines=pd.read_csv(io.StringIO(s.decode('latin-1')),index_col = 0) # last line is NaN
     df_vaccines.to_csv('static/csv/be-covid-vaccines.csv',index=True)
 
-vaccines()
-cases_hospi()
-mortality()
-mortality_statbel()
-case_age_sex()
+def variants():
+        url = "https://opendata.ecdc.europa.eu/covid19/virusvariant/csv/data.csv"
+        s = requests.get(url).content
+        df_variants = pd.read_csv(io.StringIO(s.decode('latin-1')), index_col=0)  # last line is NaN
+        df_variants.to_csv('static/csv/variants.csv', index=True)
+
+
+
+def mobility_google():
+    DOWNLOAD_URL = "https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv"
+    DOWNLOAD_PATH = "static/csv/google_mobility_report.csv"
+    urllib.request.urlretrieve(DOWNLOAD_URL, DOWNLOAD_PATH)
+
+    df = pd.read_csv(DOWNLOAD_PATH)
+
+    df_eu = df[df['country_region_code'].isin(['BE', 'FR', 'NL', 'DE', 'LU', 'GB', 'PT', 'SP', 'IT', 'SE', 'PL'])]
+    df_eu = df_eu[df_eu['sub_region_1'].isnull()]
+    df_eu.to_csv("static/csv/google_mobility_report_eu.csv", index=False)
+
+    df_be = df[df['country_region_code'].isin(['BE'])]
+    df_be.to_csv("static/csv/google_mobility_report_be.csv", index=False)
+
+    df_cities = df[df['sub_region_1'].isin(['Île-de-France', 'Brussels', 'Greater London', 'Berlin', 'North Holland'])]
+    df_cities.to_csv("static/csv/google_mobility_report_cities.csv", index=False)
+
+mobility_google()
+#variants()
+#vaccines()
+#cases_hospi()
+#mortality()
+#mortality_statbel()
+#case_age_sex()
+#covid_daily_ins5()
