@@ -28,6 +28,8 @@ jobs:
         jupyter nbconvert --to html --TemplateExporter.exclude_input=True --no-prompt --execute vaccines.ipynb --output docs/vaccines.html
         jupyter nbconvert --to html --TemplateExporter.exclude_input=True --no-prompt --execute mortality-statbel.ipynb --output docs/mortality-statbel.html
         jupyter nbconvert --to html --TemplateExporter.exclude_input=True --no-prompt --execute mobility-google.ipynb --output docs/mobility-google.html
+        jupyter nbconvert --to html --TemplateExporter.exclude_input=True --no-prompt --execute decrochage-omicron.ipynb --output docs/decrochage-omicron.html
+
 
 
     - name: Commit the new processed data
