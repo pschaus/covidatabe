@@ -174,7 +174,7 @@ def mobility_google():
     df_cities = df[df['sub_region_1'].isin(['Île-de-France', 'Brussels', 'Greater London', 'Berlin', 'North Holland'])]
     df_cities.to_csv("static/csv/google_mobility_report_cities.csv", index=False)
 
-mobility_google()
+#mobility_google()
 variants()
 vaccines()
 cases_hospi()
