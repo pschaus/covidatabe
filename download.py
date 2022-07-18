@@ -175,7 +175,7 @@ def mobility_google():
     df_cities.to_csv("static/csv/google_mobility_report_cities.csv", index=False)
 
 #mobility_google()
-variants()
+#variants()
 vaccines()
 cases_hospi()
 mortality()
