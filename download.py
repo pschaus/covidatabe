@@ -117,10 +117,16 @@ def mortality_statbel():
     # find the first matching csv file in the zip:
     match = [s for s in zf.namelist() if ".txt" in s][0]
     # the first line of the file contains a string - that line shall de     ignored, hence skiprows
+    
+    def try_parsing_date(text):
+      for fmt in ('%Y-%m-%d', '%d.%m.%Y', '%d/%m/%Y'):
+          try:
+              return datetime.strptime(text, fmt)
+          except ValueError:
+              pass
+      raise ValueError('no valid date format found')
 
-    mydateparser = lambda x: datetime.strptime(x, "%d/%m/%Y")
-
-    df = pandas.read_csv(zf.open(match), parse_dates=['DT_DATE'], date_parser=mydateparser, low_memory=False, sep="|",
+    df = pandas.read_csv(zf.open(match), parse_dates=['DT_DATE'], date_parser=try_parsing_date, low_memory=False, sep="|",
                          encoding="latin-1")
 
     df = df[df['DT_DATE'] >= '2015-01-01']
