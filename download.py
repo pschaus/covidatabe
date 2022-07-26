@@ -119,7 +119,7 @@ def mortality_statbel():
     # the first line of the file contains a string - that line shall de     ignored, hence skiprows
     
     def try_parsing_date(text):
-      for fmt in ('%Y-%m-%d', '%d.%m.%Y', '%d/%m/%Y'):
+      for fmt in ('%d-%m-%Y', '%d.%m.%Y', '%d/%m/%Y'):
           try:
               return datetime.strptime(text, fmt)
           except ValueError:
